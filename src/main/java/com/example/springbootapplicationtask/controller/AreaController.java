@@ -1,6 +1,7 @@
 package com.example.springbootapplicationtask.controller;
 
 import com.example.springbootapplicationtask.dto.AreaDTO;
+import com.example.springbootapplicationtask.exception.NoDataFoundException;
 import com.example.springbootapplicationtask.model.Area;
 import com.example.springbootapplicationtask.repository.AreaRepository;
 import com.example.springbootapplicationtask.service.AreaService;
@@ -13,14 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/area")
 @Slf4j
 public class AreaController {
     @Autowired
@@ -38,6 +41,9 @@ public class AreaController {
     })
     public ResponseEntity getAreas(){
         List<AreaDTO> areas = areaService.findAllAreas();
+        if(areas.isEmpty()){
+            throw new NoDataFoundException("No Areas found");
+        }
         HashMap<String, Object> map = new HashMap<>();
         String[] yoshiArray = new String[] {
                 "¨ ¨ ¨ ¨ ¨ ¨ ¨▲.︵.▲", "¨ ¨ ¨ ¨ ¨ ¨ ¨◄ƒ░░ 0 }.....︵.", "¨ ¨ ¨ ¨ ¨ ¨◄ƒ░░░░░░ o\")", "¨ ¨ ¨ ¨ ¨ ◄ƒ░░░(────.•^'''",
@@ -64,29 +70,17 @@ public class AreaController {
     public ResponseEntity saveArea(@RequestBody Area area){
         log.info("Inside controller layer: ");
         HashMap<String, Object> map = new HashMap<>();
-//        Optional<AreaDTO> areaDTOtoBeUpdated = Optional.ofNullable(areaService.findArea(area.getId()));
+        //check if record exists to update it
         try {
             Optional<AreaDTO> areaDTOtoBeUpdated = Optional.ofNullable(areaService.findArea(area.getId()));
             area.setId(areaDTOtoBeUpdated.get().getId());
             map.put("area: "+area.getId(), area);
         }catch(Exception e){
-//            AreaDTO areaDTO = areaService.addArea(area);
-//            map.put("area: "+areaDTO.getId(), areaDTO);
+            System.out.println(e);
         }
+
         AreaDTO areaDTO = areaService.addArea(area);
         map.put("area: "+areaDTO.getId(), areaDTO);
-//        !areaDTOtoBeUpdated.ifPresent(() -> {
-//            area.setId(areaDTOtoBeUpdated.get().getId());
-//        });
-        // use update method
-//        areaDTOtoBeUpdated.ifPresent(areaDTO -> area.setId(areaDTO.getId()));
-//        map.put("area: "+area.getId(), area);
-//
-//        if(areaDTOtoBeUpdated.isEmpty()){
-//            AreaDTO areaDTO = areaService.addArea(area);
-//            map.put("area: "+areaDTO.getId(), areaDTO);
-//        }
-//        map.put("area: "+areaDTO.getId(), areaDTO);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
@@ -120,5 +114,90 @@ public class AreaController {
         areaService.deleteArea(id);
         return new ResponseEntity("Area with id: "+id+ " Deleted", HttpStatus.OK);
     }
+
+//    @PostMapping(params = "action=import")
+//    public ResponseEntity importCSV(@RequestParam MultipartFile csvFile) {
+//        log.info("File name: " + csvFile.getOriginalFilename());
+//        log.info("File size: " + csvFile.getSize());
+//
+//        try {
+//            areaService.importCSV(csvFile.getInputStream());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
+
+    @GetMapping("/readData")
+    public ResponseEntity uploadDataInDb(){
+        areaService.saveAreaData();
+        return new ResponseEntity("Data Inserted", HttpStatus.OK);
+    }
+
+    @GetMapping("/findByName")
+    @Operation(summary = "Get Area By name", responses = {
+            @ApiResponse(description = "Get Area Get Area By name", responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Area.class))),
+            @ApiResponse(description = "Bad Request", responseCode = "400",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500",
+                    content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
+    })
+    public ResponseEntity getAreaByName(@RequestParam String name){
+        List<AreaDTO> list = areaService.findAreasByName(name);
+        if(list.isEmpty()){
+            throw new NoDataFoundException("No Areas found");
+        }
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("Areas with name: "+name, list);
+        return new ResponseEntity(map, HttpStatus.OK);
+    }
+
+    @GetMapping("/findTotalVaccinations")
+    @Operation(summary = "Get Area By name", responses = {
+            @ApiResponse(description = "Get Area Get Area By name", responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Area.class))),
+            @ApiResponse(description = "Bad Request", responseCode = "400",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500",
+                    content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
+    })
+    public ResponseEntity getTotalVaccinationsByAreaName(@RequestParam String name){
+        List<AreaDTO> list = areaService.findAreasByName(name);
+        if(list.isEmpty()){
+            throw new NoDataFoundException("No Areas found");
+        }
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("TotalVaccinations for area: "+name, list.stream().map(area1 -> area1.getTotalVaccinations()));
+        return new ResponseEntity(map, HttpStatus.OK);
+    }
+
+    @GetMapping("/findTotalVaccinationsPerRegion")
+    @Operation(summary = "Get Area By name", responses = {
+            @ApiResponse(description = "Get Area Get Area By name", responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Area.class))),
+            @ApiResponse(description = "Bad Request", responseCode = "400",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500",
+                    content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
+    })
+    public ResponseEntity getTotalVaccinationsPerRegion(){
+        List<Double> persList = new ArrayList<>();
+
+        List<AreaDTO> list = areaService.findAllAreas();
+        if(list.isEmpty()){
+            throw new NoDataFoundException("No Areas found");
+        }
+//        List<Integer> personsList = list.stream().map(area1 -> (area1.getTotalDistinctPersons() *2)).collect(Collectors.toList());
+        double[] personsArray = list.parallelStream().mapToDouble(area1 -> (area1.getTotalDistinctPersons() *2)/area1.getTotalVaccinations()).toArray();
+        System.out.println(personsArray.toString());
+
+//        List<Integer> personsList = list.stream().forEach();
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("Vaccination Percentage : ", personsArray);
+        return new ResponseEntity(map, HttpStatus.OK);
+    }
+
 
 }

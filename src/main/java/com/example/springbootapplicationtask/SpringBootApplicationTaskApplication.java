@@ -20,7 +20,7 @@ public class SpringBootApplicationTaskApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		areaRepository.save(new Area( "ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ", 702, 1297,834,97,2036,new Date(),
-				34083,34083,11278,45170));
+//		areaRepository.save(new Area( "ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ", 702, 1297,834,97,2036,new Date(),
+//				34083,34083,11278,45170));
 	}
 }

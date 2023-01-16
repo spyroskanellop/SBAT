@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -15,7 +16,7 @@ public class AreaDTO {
     private int dailyDose2;
     private int dayDiff;
     private int dayTotal;
-    private Date referenceDate;
+    private LocalDateTime referenceDate;
     private int totalDistinctPersons;
     private int totalDose1;
     private int totalDose2;
