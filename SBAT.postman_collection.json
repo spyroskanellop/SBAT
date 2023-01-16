@@ -1,0 +1,421 @@
+{
+	"info": {
+		"_postman_id": "653e51da-fa74-407b-a9d8-4c0e1e1944e7",
+		"name": "SBAT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6516331"
+	},
+	"item": [
+		{
+			"name": "Areas",
+			"item": [
+				{
+					"name": "Get all areas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let template = `\r",
+									"<table bgcolor=\"#FFFFFF\">\r",
+									"        <tr>\r",
+									"            <th>Name</th>\r",
+									"            <th>ID</th>\r",
+									"        </tr>\r",
+									"{{name}}\r",
+									"        {{#each response}}\r",
+									"            <tr>\r",
+									"                <td>{{name}}</td>\r",
+									"                <td>{{id}}</td>\r",
+									"            </tr>\r",
+									"        {{/each}}\r",
+									"    </table>\r",
+									"`;\r",
+									"\r",
+									"let gitdata = pm.response.json();\r",
+									"\r",
+									"pm.visualizer.set(template, gitdata);\r",
+									"\r",
+									"console.log(gitdata);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/area/",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"area",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload areas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/area/readData",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"area",
+								"readData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Area",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"name\": \"ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ\",\r\n            \"id\": 706,\r\n            \"dailyDose1\": 1297,\r\n            \"dailyDose2\": 834,\r\n            \"dayDiff\": 97,\r\n            \"dayTotal\": 2036,\r\n            \"referenceDate\": \"2017-01-13T17:09:42.411\",\r\n            \"totalDistinctPersons\": 34083,\r\n            \"totalDose1\": 34083,\r\n            \"totalDose2\": 11278,\r\n            \"totalVaccinations\": 45175\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8093/api/add",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get area By id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost:8093/api/area/701",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"area",
+								"701"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all vaccinations for area",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/area/findTotalVaccinations?name=ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"area",
+								"findTotalVaccinations"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete area By id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/706",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"706"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all areas by name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let template = `\r",
+									"<table bgcolor=\"#FFFFFF\">\r",
+									"        <tr>\r",
+									"            <th>Name</th>\r",
+									"            <th>ID</th>\r",
+									"        </tr>\r",
+									"{{name}}\r",
+									"        {{#each response}}\r",
+									"            <tr>\r",
+									"                <td>{{name}}</td>\r",
+									"                <td>{{id}}</td>\r",
+									"            </tr>\r",
+									"        {{/each}}\r",
+									"    </table>\r",
+									"`;\r",
+									"\r",
+									"let gitdata = pm.response.json();\r",
+									"\r",
+									"pm.visualizer.set(template, gitdata);\r",
+									"\r",
+									"console.log(gitdata);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8093/api/area/findByName?name=ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"area",
+								"findByName"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Populations",
+			"item": [
+				{
+					"name": "Get All Populations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/population/",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"population",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Population",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 203,\r\n    \"regionalUnit\": \"Π.Ε. Θεσσαλονίκης\",\r\n    \"population\": 1110312\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8093/api/population/add",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"population",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Population by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/population/202",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"population",
+								"202"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete population by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/population/203",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"population",
+								"203"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload population",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/population/readData",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"population",
+								"readData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get population by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/population/findByName?regionalUnit=Π.Ε. Θεσσαλονίκης",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"population",
+								"findByName"
+							],
+							"query": [
+								{
+									"key": "regionalUnit",
+									"value": "Π.Ε. Θεσσαλονίκης"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get population for regional name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/population/getPopulation?regionalUnit=Π.Ε. Θεσσαλονίκης",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"population",
+								"getPopulation"
+							],
+							"query": [
+								{
+									"key": "regionalUnit",
+									"value": "Π.Ε. Θεσσαλονίκης"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

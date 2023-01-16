@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/area")
@@ -182,20 +183,16 @@ public class AreaController {
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
     public ResponseEntity getTotalVaccinationsPerRegion(){
-        List<Double> persList = new ArrayList<>();
-
         List<AreaDTO> list = areaService.findAllAreas();
+
         if(list.isEmpty()){
             throw new NoDataFoundException("No Areas found");
         }
 //        List<Integer> personsList = list.stream().map(area1 -> (area1.getTotalDistinctPersons() *2)).collect(Collectors.toList());
-        double[] personsArray = list.parallelStream().mapToDouble(area1 -> (area1.getTotalDistinctPersons() *2)/area1.getTotalVaccinations()).toArray();
-        System.out.println(personsArray.toString());
-
-//        List<Integer> personsList = list.stream().forEach();
-
+        List<Double> personsList = list.stream().map(area1 -> ((double)area1.getTotalDistinctPersons() *2)/area1.getTotalVaccinations()).collect(Collectors.toList());
+        list.stream().map(area -> area.getName());
         HashMap<String, Object> map = new HashMap<>();
-        map.put("Vaccination Percentage : ", personsArray);
+        map.put("Vaccination Percentage : ", personsList);
         return new ResponseEntity(map, HttpStatus.OK);
     }
 
