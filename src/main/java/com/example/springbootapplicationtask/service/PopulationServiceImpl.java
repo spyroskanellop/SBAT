@@ -68,7 +68,10 @@ public class PopulationServiceImpl implements PopulationService {
 //        }
 //
 //    }
-
+    /**
+     * Read csv file and fill Population.java class with each row.
+     * If Id is not found in db, entry is inserted
+     */
     public void savePopulationData(){
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader("src\\main\\resources\\populationRegionalUnits.csv"));

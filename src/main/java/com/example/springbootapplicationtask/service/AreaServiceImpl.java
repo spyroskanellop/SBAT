@@ -70,6 +70,10 @@ public class AreaServiceImpl implements AreaService{
 //
 //    }
 
+    /**
+     * Read csv file and fill Area.java class with each row.
+     * If Id is not found in db, entry is inserted
+     */
     public void saveAreaData(){
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader("src\\main\\resources\\covidStats.csv"));
