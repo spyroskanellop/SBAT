@@ -124,6 +124,14 @@ public class PopulationController {
 //    }
 
     @GetMapping("/readData")
+    @Operation(summary = "Upload csv data", responses = {
+            @ApiResponse(description = "Upload csv data", responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Population.class))),
+            @ApiResponse(description = "Bad Request", responseCode = "400",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500",
+                    content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
+    })
     public ResponseEntity uploadDataInDb(){
         populationService.savePopulationData();
         return new ResponseEntity("Data Inserted", HttpStatus.OK);

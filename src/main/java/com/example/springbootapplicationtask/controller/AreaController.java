@@ -130,6 +130,14 @@ public class AreaController {
 //    }
 
     @GetMapping("/readData")
+    @Operation(summary = "Upload csv data", responses = {
+            @ApiResponse(description = "Upload csv data", responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Area.class))),
+            @ApiResponse(description = "Bad Request", responseCode = "400",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500",
+                    content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
+    })
     public ResponseEntity uploadDataInDb(){
         areaService.saveAreaData();
         return new ResponseEntity("Data Inserted", HttpStatus.OK);
@@ -137,7 +145,7 @@ public class AreaController {
 
     @GetMapping("/findByName")
     @Operation(summary = "Get Area By name", responses = {
-            @ApiResponse(description = "Get Area Get Area By name", responseCode = "200",
+            @ApiResponse(description = "Get Area By name", responseCode = "200",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Area.class))),
             @ApiResponse(description = "Bad Request", responseCode = "400",
                     content = @Content(schema = @Schema(hidden = true))),
@@ -155,8 +163,8 @@ public class AreaController {
     }
 
     @GetMapping("/findTotalVaccinations")
-    @Operation(summary = "Get Area By name", responses = {
-            @ApiResponse(description = "Get Area Get Area By name", responseCode = "200",
+    @Operation(summary = "Get Total Vaccinations Per region", responses = {
+            @ApiResponse(description = "Get Total Vaccinations Per region", responseCode = "200",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Area.class))),
             @ApiResponse(description = "Bad Request", responseCode = "400",
                     content = @Content(schema = @Schema(hidden = true))),
@@ -174,8 +182,8 @@ public class AreaController {
     }
 
     @GetMapping("/findTotalVaccinationsPerRegion")
-    @Operation(summary = "Get Area By name", responses = {
-            @ApiResponse(description = "Get Area Get Area By name", responseCode = "200",
+    @Operation(summary = "Get Total Vaccinations for all regions", responses = {
+            @ApiResponse(description = "Get Total Vaccinations for all regions", responseCode = "200",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Area.class))),
             @ApiResponse(description = "Bad Request", responseCode = "400",
                     content = @Content(schema = @Schema(hidden = true))),
