@@ -11,6 +11,7 @@
 * Swagger API for better documentation
 * DAO used to change the data without changing the entities directly
 * Service layer implementations added 
+* Added indexed columns for faster db retrieval.
 
 ## Postman file included.
 
