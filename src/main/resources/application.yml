@@ -5,3 +5,8 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://yoshi:i_am_a_dinosaur@cluster0.x2xqu.gcp.mongodb.net/db1?retryWrites=true&w=majority
+
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1

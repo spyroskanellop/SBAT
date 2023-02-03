@@ -10,10 +10,14 @@ import com.example.springbootapplicationtask.repository.PopulationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,45 +58,33 @@ public class PopulationServiceImpl implements PopulationService {
         return list;
     }
 
-//    public void importCSV(InputStream inputStream) {
-//        try {
-//            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-//            InputStreamReader inputStreamReader = new InputStreamReader(zipInputStream);
-//            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-//            bufferedReader.lines()
-//                    .skip(1)
-//                    .map(Area::parse)
-//                    .forEach(areaRepository::save);
-//        } catch( Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+
     /**
      * Read csv file and fill Population.java class with each row.
      * If Id is not found in db, entry is inserted
      */
-    public void savePopulationData(){
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("src\\main\\resources\\populationRegionalUnits.csv"));
+    public List<Population> uploadPopulationFromFile(MultipartFile file) {
+        List<Population> populationList = new ArrayList<>();
 
-            Stream<String> data = bufferedReader.lines().skip(1).limit(5); //placed a limit cause of lots of entries and delay of time
-            data.forEachOrdered(line -> {
-                String[] text = line.split(",");
+        try {
+            InputStream inputStream = file.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            Stream<String> lines = br.lines().skip(1);
+            lines.forEach(entry -> {
+                entry = entry.replace(".","");
+                String[] text = entry.split(",");
                 Population population = new Population();
                 population.setId(Integer.parseInt(text[0]));
                 population.setRegionalUnit(text[1]);
-                text[2] = text[2].replace(".", "");
                 population.setPopulation(Long.parseLong(text[2]));
-
-                if(populationRepository.findById(Integer.parseInt(text[0])).isEmpty()){
-                    populationRepository.save(population);
+                if (!findAllPopulations().contains(population.toDTO())) {
+                    populationList.add(population);
+                    addPopulation(population);
                 }
             });
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Error processing file: "+file+"\n"+"e");
         }
-        catch(Exception e){
-            System.out.println(e);
-        }
-
+        return populationList;
     }
 }

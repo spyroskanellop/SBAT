@@ -1,7 +1,12 @@
 package com.example.springbootapplicationtask.model;
 
+import com.example.springbootapplicationtask.converters.LocalDateTimeConverter;
 import com.example.springbootapplicationtask.dto.AreaDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvCustomBindByPosition;
+import com.opencsv.bean.CsvDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -89,14 +94,6 @@ public class Area {
         return areaDTO;
     }
 
-//    public static Area parse(String csvLine) {
-//        String[] fields = csvLine.split(",\\s*");
-//        LocalDateTime referenceDate = LocalDateTime.parse(fields[7], DateTimeFormatter.ofPattern("M/d/yyyy"));
-////        Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(fields[7]);
-//        return new Area(fields[1], Integer.parseInt(fields[2]), Integer.parseInt(fields[3]), Integer.parseInt(fields[4]), Integer.parseInt(fields[5]),
-//                Integer.parseInt(fields[6]), referenceDate, Integer.parseInt(fields[8]), Integer.parseInt(fields[9]), Integer.parseInt(fields[10]),
-//                Integer.parseInt(fields[11]));
-//    }
 }
 
 

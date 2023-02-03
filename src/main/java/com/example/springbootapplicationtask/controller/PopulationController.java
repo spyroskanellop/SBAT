@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -110,20 +111,7 @@ public class PopulationController {
         return new ResponseEntity("Population with id: "+id+ " Deleted", HttpStatus.OK);
     }
 
-//    @PostMapping(params = "action=import")
-//    public ResponseEntity importCSV(@RequestParam MultipartFile csvFile) {
-//        log.info("File name: " + csvFile.getOriginalFilename());
-//        log.info("File size: " + csvFile.getSize());
-//
-//        try {
-//            areaService.importCSV(csvFile.getInputStream());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
-
-    @GetMapping("/readData")
+    @PostMapping("/upload")
     @Operation(summary = "Upload csv data", responses = {
             @ApiResponse(description = "Upload csv data", responseCode = "200",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Population.class))),
@@ -132,9 +120,14 @@ public class PopulationController {
             @ApiResponse(description = "Internal Server Error", responseCode = "500",
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
-    public ResponseEntity uploadDataInDb(){
-        populationService.savePopulationData();
-        return new ResponseEntity("Data Inserted", HttpStatus.OK);
+    public ResponseEntity uploadData(@RequestParam MultipartFile file) throws Exception{
+        log.info("File name: "+file.getOriginalFilename());
+        log.info("File size: "+file.getSize());
+        HashMap<String, Object> map = new HashMap<>();
+
+        List<Population> list = populationService.uploadPopulationFromFile(file);
+        map.put("PopulationList", list);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @GetMapping("/findByName")
@@ -156,7 +149,7 @@ public class PopulationController {
         return new ResponseEntity(map, HttpStatus.OK);
     }
 
-    @GetMapping("getPopulation")
+    @GetMapping("/getPopulation")
     @Operation(summary = "Get Population By name", responses = {
             @ApiResponse(description = "Get population By name", responseCode = "200",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Population.class))),
@@ -166,6 +159,9 @@ public class PopulationController {
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
     public ResponseEntity getPopulationByRegion(@RequestParam String regionalUnit){
+        if(regionalUnit.isEmpty()){
+            throw new NoDataFoundException("This Regional Unit is not valid: "+regionalUnit);
+        }
         List<PopulationDTO> list = populationService.findPopulationByName(regionalUnit);
         if(list.isEmpty()){
             throw new NoDataFoundException("No Areas found for regional Unit: "+regionalUnit);

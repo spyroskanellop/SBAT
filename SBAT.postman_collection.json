@@ -61,33 +61,13 @@
 					"response": []
 				},
 				{
-					"name": "Upload areas",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8093/api/area/readData",
-							"host": [
-								"localhost"
-							],
-							"port": "8093",
-							"path": [
-								"api",
-								"area",
-								"readData"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Save Area",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n            \"name\": \"ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ\",\r\n            \"id\": 706,\r\n            \"dailyDose1\": 1297,\r\n            \"dailyDose2\": 834,\r\n            \"dayDiff\": 97,\r\n            \"dayTotal\": 2036,\r\n            \"referenceDate\": \"2017-01-13T17:09:42.411\",\r\n            \"totalDistinctPersons\": 34083,\r\n            \"totalDose1\": 34083,\r\n            \"totalDose2\": 11278,\r\n            \"totalVaccinations\": 45175\r\n        }",
+							"raw": "{\r\n            \"name\": \"ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ\",\r\n            \"id\": 706,\r\n            \"dailyDose1\": 1297,\r\n            \"dailyDose2\": 834,\r\n            \"dayDiff\": 97,\r\n            \"dayTotal\": 2036,\r\n            \"referenceDate\": \"2021-05-06T00:00:00\",\r\n            \"totalDistinctPersons\": 34083,\r\n            \"totalDose1\": 34083,\r\n            \"totalDose2\": 11278,\r\n            \"totalVaccinations\": 45175\r\n        }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -95,13 +75,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8093/api/add",
+							"raw": "localhost:8093/api/area/add",
 							"host": [
 								"localhost"
 							],
 							"port": "8093",
 							"path": [
 								"api",
+								"area",
 								"add"
 							]
 						}
@@ -141,7 +122,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8093/api/area/findTotalVaccinations?name=ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ",
+							"raw": "localhost:8093/api/area/findTotalVaccinationsPerRegion",
 							"host": [
 								"localhost"
 							],
@@ -149,13 +130,7 @@
 							"path": [
 								"api",
 								"area",
-								"findTotalVaccinations"
-							],
-							"query": [
-								{
-									"key": "name",
-									"value": "ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ"
-								}
+								"findTotalVaccinationsPerRegion"
 							]
 						}
 					},
@@ -167,13 +142,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8093/api/706",
+							"raw": "localhost:8093/api/area/706",
 							"host": [
 								"localhost"
 							],
 							"port": "8093",
 							"path": [
 								"api",
+								"area",
 								"706"
 							]
 						}
@@ -244,6 +220,36 @@
 									"key": "name",
 									"value": "ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Area Data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/spyro/Downloads/covidStats (1).csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8093/api/area/upload",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"area",
+								"upload"
 							]
 						}
 					},
@@ -329,7 +335,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8093/api/population/203",
+							"raw": "localhost:8093/api/population/0",
 							"host": [
 								"localhost"
 							],
@@ -337,27 +343,7 @@
 							"path": [
 								"api",
 								"population",
-								"203"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Upload population",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8093/api/population/readData",
-							"host": [
-								"localhost"
-							],
-							"port": "8093",
-							"path": [
-								"api",
-								"population",
-								"readData"
+								"0"
 							]
 						}
 					},
@@ -369,7 +355,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8093/api/population/findByName?regionalUnit=Π.Ε. Θεσσαλονίκης",
+							"raw": "localhost:8093/api/population/findByName?regionalUnit=ΠΕ Θεσσαλονίκης",
 							"host": [
 								"localhost"
 							],
@@ -382,7 +368,7 @@
 							"query": [
 								{
 									"key": "regionalUnit",
-									"value": "Π.Ε. Θεσσαλονίκης"
+									"value": "ΠΕ Θεσσαλονίκης"
 								}
 							]
 						}
@@ -410,6 +396,56 @@
 									"key": "regionalUnit",
 									"value": "Π.Ε. Θεσσαλονίκης"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Population Data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/spyro/Downloads/populationRegionalUnits (2).csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8093/api/population/upload",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"population",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find vaccination percentage per region",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8093/api/area/findTotalVaccinationsPerRegion",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"api",
+								"area",
+								"findTotalVaccinationsPerRegion"
 							]
 						}
 					},

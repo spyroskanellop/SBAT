@@ -3,7 +3,6 @@ package com.example.springbootapplicationtask.controller;
 import com.example.springbootapplicationtask.dto.AreaDTO;
 import com.example.springbootapplicationtask.exception.NoDataFoundException;
 import com.example.springbootapplicationtask.model.Area;
-import com.example.springbootapplicationtask.repository.AreaRepository;
 import com.example.springbootapplicationtask.service.AreaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,11 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/area")
@@ -116,31 +114,16 @@ public class AreaController {
         return new ResponseEntity("Area with id: "+id+ " Deleted", HttpStatus.OK);
     }
 
-//    @PostMapping(params = "action=import")
-//    public ResponseEntity importCSV(@RequestParam MultipartFile csvFile) {
-//        log.info("File name: " + csvFile.getOriginalFilename());
-//        log.info("File size: " + csvFile.getSize());
-//
-//        try {
-//            areaService.importCSV(csvFile.getInputStream());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
 
-    @GetMapping("/readData")
-    @Operation(summary = "Upload csv data", responses = {
-            @ApiResponse(description = "Upload csv data", responseCode = "200",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Area.class))),
-            @ApiResponse(description = "Bad Request", responseCode = "400",
-                    content = @Content(schema = @Schema(hidden = true))),
-            @ApiResponse(description = "Internal Server Error", responseCode = "500",
-                    content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
-    })
-    public ResponseEntity uploadDataInDb(){
-        areaService.saveAreaData();
-        return new ResponseEntity("Data Inserted", HttpStatus.OK);
+    @PostMapping("/upload")
+    public ResponseEntity uploadData(@RequestParam MultipartFile file) throws Exception{
+        log.info("File name: "+file.getOriginalFilename());
+        log.info("File size: "+file.getSize());
+        HashMap<String, Object> map = new HashMap<>();
+
+        List<Area> list = areaService.uploadAreaFromFile(file);
+        map.put("AreaList", list);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @GetMapping("/findByName")
@@ -171,7 +154,7 @@ public class AreaController {
             @ApiResponse(description = "Internal Server Error", responseCode = "500",
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
-    public ResponseEntity getTotalVaccinationsByAreaName(@RequestParam String name){
+    public ResponseEntity getTotalVaccinationsByAreaName(@Valid @RequestParam String name){
         List<AreaDTO> list = areaService.findAreasByName(name);
         if(list.isEmpty()){
             throw new NoDataFoundException("No Areas found");
@@ -192,15 +175,16 @@ public class AreaController {
     })
     public ResponseEntity getTotalVaccinationsPerRegion(){
         List<AreaDTO> list = areaService.findAllAreas();
-
+        HashMap<String, Object> map = new HashMap<>();
         if(list.isEmpty()){
             throw new NoDataFoundException("No Areas found");
         }
-//        List<Integer> personsList = list.stream().map(area1 -> (area1.getTotalDistinctPersons() *2)).collect(Collectors.toList());
-        List<Double> personsList = list.stream().map(area1 -> ((double)area1.getTotalDistinctPersons() *2)/area1.getTotalVaccinations()).collect(Collectors.toList());
-        list.stream().map(area -> area.getName());
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("Vaccination Percentage : ", personsList);
+        list.forEach(areaDTO -> {
+            BigDecimal percentage = BigDecimal.valueOf(areaDTO.getTotalVaccinations())
+                    .divide(BigDecimal.valueOf(areaDTO.getTotalDistinctPersons() * 2L), 2, RoundingMode.HALF_UP);
+
+            map.put(areaDTO.getName(), percentage +"%");
+        });
         return new ResponseEntity(map, HttpStatus.OK);
     }
 

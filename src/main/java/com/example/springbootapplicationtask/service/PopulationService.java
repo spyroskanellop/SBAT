@@ -4,6 +4,7 @@ import com.example.springbootapplicationtask.dto.AreaDTO;
 import com.example.springbootapplicationtask.dto.PopulationDTO;
 import com.example.springbootapplicationtask.model.Area;
 import com.example.springbootapplicationtask.model.Population;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ public interface PopulationService{
     void deletePopulation(int populationId);
     List<PopulationDTO> findAllPopulations();
     List<PopulationDTO> findPopulationByName(String populationName);
-    void savePopulationData();
+    List<Population> uploadPopulationFromFile(MultipartFile file);
 }
