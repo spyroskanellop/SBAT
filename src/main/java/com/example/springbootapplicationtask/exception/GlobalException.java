@@ -1,21 +1,21 @@
 package com.example.springbootapplicationtask.exception;
 
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.context.request.WebRequest;
+import java.time.LocalDateTime;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
-
-
 @ControllerAdvice
-public class GlobalException {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class GlobalException{
 
+    // occur when search appear none results, where it should exist, 404 error code
     @ExceptionHandler
     public ResponseEntity<ErrorObject> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException){
         ErrorObject errorObject = new ErrorObject();
@@ -24,7 +24,7 @@ public class GlobalException {
         errorObject.setTimestamp(LocalDateTime.now());
         return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
     }
-
+    // occur when search appear none results, 204 error code
     @ExceptionHandler
     public ResponseEntity<ErrorObject> handleNoDataFoundException(NoDataFoundException noDataFoundException){
         ErrorObject errorObject = new ErrorObject();
@@ -34,32 +34,14 @@ public class GlobalException {
         return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NO_CONTENT);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorObject> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupported httpRequestMethodNotSupported){
-        ErrorObject errorObject = new ErrorObject();
-        errorObject.setStatus(HttpStatus.NOT_FOUND.value());
-        errorObject.setMessage(httpRequestMethodNotSupported.getMessage());
-        errorObject.setTimestamp(LocalDateTime.now());
-        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
-    }
 
-    @ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
-    protected ResponseEntity<ErrorObject> handleConflict(RuntimeException ex, WebRequest request) {
+    //    Invoked by jpa validation annotations
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorObject> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatus(HttpStatus.NOT_FOUND.value());
-        errorObject.setMessage("This should be application specific");
+        errorObject.setMessage(methodArgumentNotValidException.getBindingResult().getFieldError().getDefaultMessage());
         errorObject.setTimestamp(LocalDateTime.now());
-//        String bodyOfResponse = "This should be application specific";
-        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(value =  HttpRequestMethodNotSupportedException.class)
-    protected ResponseEntity<ErrorObject> handleConflict2(RuntimeException ex, WebRequest request) {
-        ErrorObject errorObject = new ErrorObject();
-        errorObject.setStatus(HttpStatus.NOT_FOUND.value());
-        errorObject.setMessage("This should be application specific");
-        errorObject.setTimestamp(LocalDateTime.now());
-//        String bodyOfResponse = "This should be application specific";
         return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.CONFLICT);
     }
 }

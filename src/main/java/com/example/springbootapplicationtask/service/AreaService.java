@@ -13,10 +13,8 @@ public interface AreaService {
     AreaDTO findArea(int areaId);
     void deleteArea(int areaId);
     List<AreaDTO> findAllAreas();
-
-//    void importCSV(InputStream inputStream);
     void saveAreaData(String filename);
     List<AreaDTO> findAreasByName(String areaName);
-
     List<Area> uploadAreaFromFile(MultipartFile file);
+    List<AreaDTO> getTotalVaccinationsPerRegion();
 }

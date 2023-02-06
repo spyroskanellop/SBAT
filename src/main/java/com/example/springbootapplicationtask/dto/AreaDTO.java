@@ -1,25 +1,50 @@
 package com.example.springbootapplicationtask.dto;
 
 import com.example.springbootapplicationtask.model.Area;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 public class AreaDTO {
+    @NotBlank(message = "Name is mandatory")
+    @Pattern(regexp="[α-ωΑ-Ω]+", message="Name must contain only Greek letters")
     private String name;
     private int id;
+    @NotNull(message = "Daily Dose is required")
+    @Range(min = 1, message = "Daily dose must be positive number")
     private int dailyDose1;
+    @NotNull(message = "Daily Dose is required")
+    @Range(min = 1, message = "Daily dose must be positive number")
     private int dailyDose2;
+    @NotNull
+    @Range(min = 1, message = "Day diff must be positive number")
     private int dayDiff;
+    @NotNull
+    @Range(min = 1, message = "Day total must be positive number")
     private int dayTotal;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS]")
     private LocalDateTime referenceDate;
+    @NotNull
+    @Range(min = 1, message = "Total distinct persons must be positive number")
     private int totalDistinctPersons;
+    @NotNull
+    @NotNull
+    @Range(min = 1, message = "Total dose must be positive number")
     private int totalDose1;
+    @NotNull
+    @Range(min = 1, message = "Total dose2 must be positive number")
     private int totalDose2;
+    @NotNull
+    @Range(min = 1, message = "Total vaccinations must be positive number")
     private int totalVaccinations;
 
     /**

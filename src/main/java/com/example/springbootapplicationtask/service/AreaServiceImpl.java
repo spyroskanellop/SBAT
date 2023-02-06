@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +83,21 @@ public class AreaServiceImpl implements AreaService{
         }
         return areaList;
     }
-        public void deleteArea(int areaId) {
+
+    public List<AreaDTO> getTotalVaccinationsPerRegion() {
+        List<AreaDTO> list = findAllAreas();
+        if(list.isEmpty()){
+            throw new NoDataFoundException("No Areas found");
+        }
+
+        list.forEach(areaDTO -> {
+            BigDecimal percentage = BigDecimal.valueOf(areaDTO.getTotalVaccinations())
+                    .divide(BigDecimal.valueOf(areaDTO.getTotalDistinctPersons() * 2L), 2, RoundingMode.HALF_UP);
+        });
+        return list;
+    }
+
+    public void deleteArea(int areaId) {
         log.info("Area with id {} is deleted", areaId);
         areaRepository.deleteById(areaId);
     }
