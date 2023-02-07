@@ -1,11 +1,14 @@
 package com.example.springbootapplicationtask.controller;
 
 import com.example.springbootapplicationtask.dto.AreaDTO;
+import com.example.springbootapplicationtask.dto.AreaPercentageDTO;
 import com.example.springbootapplicationtask.exception.NoDataFoundException;
 import com.example.springbootapplicationtask.exception.ResourceNotFoundException;
 import com.example.springbootapplicationtask.model.Area;
 import com.example.springbootapplicationtask.repository.AreaRepository;
 import com.example.springbootapplicationtask.service.AreaService;
+import com.example.springbootapplicationtask.view.View;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -181,19 +184,9 @@ public class AreaController {
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
     public ResponseEntity getTotalVaccinationsPerRegion(){
-//        List<AreaDTO> list = areaService.findAllAreas();
         HashMap<String, Object> map = new HashMap<>();
-//        if(list.isEmpty()){
-//            throw new NoDataFoundException("No Areas found");
-//        }
-//        list.forEach(areaDTO -> {
-//            BigDecimal percentage = BigDecimal.valueOf(areaDTO.getTotalVaccinations())
-//                    .divide(BigDecimal.valueOf(areaDTO.getTotalDistinctPersons() * 2L), 2, RoundingMode.HALF_UP);
-//
-//            map.put(areaDTO.getName(), percentage +"%");
-//        });
-        List<AreaDTO> list = areaService.getTotalVaccinationsPerRegion();
-        System.out.println(list.toString());
+        List<AreaPercentageDTO> list = areaService.getTotalVaccinationsPerRegion();
+        map.put("Percentage of vaccinations per region", list);
         return new ResponseEntity(map, HttpStatus.OK);
     }
 

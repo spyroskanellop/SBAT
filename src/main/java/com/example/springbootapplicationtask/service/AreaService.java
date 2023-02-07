@@ -1,6 +1,7 @@
 package com.example.springbootapplicationtask.service;
 
 import com.example.springbootapplicationtask.dto.AreaDTO;
+import com.example.springbootapplicationtask.dto.AreaPercentageDTO;
 import com.example.springbootapplicationtask.model.Area;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,5 +17,5 @@ public interface AreaService {
     void saveAreaData(String filename);
     List<AreaDTO> findAreasByName(String areaName);
     List<Area> uploadAreaFromFile(MultipartFile file);
-    List<AreaDTO> getTotalVaccinationsPerRegion();
+    List<AreaPercentageDTO> getTotalVaccinationsPerRegion();
 }

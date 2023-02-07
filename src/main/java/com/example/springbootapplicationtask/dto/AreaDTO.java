@@ -1,7 +1,9 @@
 package com.example.springbootapplicationtask.dto;
 
 import com.example.springbootapplicationtask.model.Area;
+import com.example.springbootapplicationtask.view.View;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.Id;
@@ -11,12 +13,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 @Data
 public class AreaDTO {
     @NotBlank(message = "Name is mandatory")
     @Pattern(regexp="[α-ωΑ-Ω]+", message="Name must contain only Greek letters")
+    @JsonView(View.Base.class)
     private String name;
     private int id;
     @NotNull(message = "Daily Dose is required")
@@ -66,5 +71,10 @@ public class AreaDTO {
         area.setTotalVaccinations(this.totalVaccinations);
 
         return area;
+    }
+
+    public String getTotalVaccinationsPerRegion(){
+        return String.valueOf(BigDecimal.valueOf(this.getTotalVaccinations())
+                .divide(BigDecimal.valueOf(this.getTotalDistinctPersons() * 2L), 2, RoundingMode.HALF_UP) +"%");
     }
 }

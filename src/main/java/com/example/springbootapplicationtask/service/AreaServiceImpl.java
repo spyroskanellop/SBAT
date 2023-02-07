@@ -1,11 +1,13 @@
 package com.example.springbootapplicationtask.service;
 
 import com.example.springbootapplicationtask.dto.AreaDTO;
+import com.example.springbootapplicationtask.dto.AreaPercentageDTO;
 import com.example.springbootapplicationtask.exception.NoDataFoundException;
 import com.example.springbootapplicationtask.exception.ResourceNotFoundException;
 import com.example.springbootapplicationtask.model.Area;
 import com.example.springbootapplicationtask.repository.AreaRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,17 +86,24 @@ public class AreaServiceImpl implements AreaService{
         return areaList;
     }
 
-    public List<AreaDTO> getTotalVaccinationsPerRegion() {
+    public List<AreaPercentageDTO> getTotalVaccinationsPerRegion() {
         List<AreaDTO> list = findAllAreas();
+        List<AreaPercentageDTO> percentages = new ArrayList<>();
         if(list.isEmpty()){
             throw new NoDataFoundException("No Areas found");
         }
 
         list.forEach(areaDTO -> {
+            AreaPercentageDTO areaPercentageDTO = new AreaPercentageDTO();
+            areaPercentageDTO.setName(areaDTO.getName());
             BigDecimal percentage = BigDecimal.valueOf(areaDTO.getTotalVaccinations())
                     .divide(BigDecimal.valueOf(areaDTO.getTotalDistinctPersons() * 2L), 2, RoundingMode.HALF_UP);
+            areaPercentageDTO.setPercentage(String.valueOf(percentage)+"%");
+
+            percentages.add(areaPercentageDTO);
         });
-        return list;
+
+        return percentages;
     }
 
     public void deleteArea(int areaId) {
