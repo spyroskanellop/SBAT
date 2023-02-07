@@ -1,12 +1,26 @@
 server:
   port: 8093
 
-spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://yoshi:i_am_a_dinosaur@cluster0.x2xqu.gcp.mongodb.net/db1?retryWrites=true&w=majority
 
   servlet:
     multipart:
       max-file-size: -1
       max-request-size: -1
+
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"
+          - info
+
+info:
+  application:
+    name: '@name@'
+    description: This is a functional SpringBoot Project 2.0 that reads 2 csv files and creates a crud based on it.
+    version: v1
+    spring-boot-version: 2.6.4

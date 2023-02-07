@@ -18,6 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +67,7 @@ public class PopulationController {
             @ApiResponse(description = "Internal Server Error", responseCode = "500",
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
-    public ResponseEntity savePopulation(@RequestBody Population population){
+    public ResponseEntity savePopulation(@Valid @RequestBody Population population){
         log.info("Inside controller layer: ");
         HashMap<String, Object> map = new HashMap<>();
         //check if record exists to update it
@@ -90,7 +94,7 @@ public class PopulationController {
             @ApiResponse(description = "Internal Server Error", responseCode = "500",
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
-    public ResponseEntity getPopulation(@PathVariable int id){
+    public ResponseEntity getPopulation(@PathVariable @Size(min = 1) @NotNull int id){
         PopulationDTO populationDTO = populationService.findPopulation(id);
         HashMap<String, Object> map = new HashMap<>();
         map.put("Population", populationDTO);
@@ -106,7 +110,7 @@ public class PopulationController {
             @ApiResponse(description = "Internal Server Error", responseCode = "500",
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
-    public ResponseEntity deletePopulation(@PathVariable int id){
+    public ResponseEntity deletePopulation(@PathVariable @Size(min = 1) @NotNull int id){
         populationService.deletePopulation(id);
         return new ResponseEntity("Population with id: "+id+ " Deleted", HttpStatus.OK);
     }
@@ -120,7 +124,7 @@ public class PopulationController {
             @ApiResponse(description = "Internal Server Error", responseCode = "500",
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
-    public ResponseEntity uploadData(@RequestParam MultipartFile file) throws Exception{
+    public ResponseEntity uploadData(@RequestParam @NotNull MultipartFile file) throws Exception{
         log.info("File name: "+file.getOriginalFilename());
         log.info("File size: "+file.getSize());
         HashMap<String, Object> map = new HashMap<>();
@@ -158,7 +162,7 @@ public class PopulationController {
             @ApiResponse(description = "Internal Server Error", responseCode = "500",
                     content = @Content(mediaType = "application/json", schema = @Schema(hidden = true))),
     })
-    public ResponseEntity getPopulationByRegion(@RequestParam String regionalUnit){
+    public ResponseEntity getPopulationByRegion(@RequestParam @Size(min = 1) @NotNull @Pattern(regexp="[α-ωΑ-Ω]+", message="Regional Unit must contain only Greek letters") String regionalUnit){
         if(regionalUnit.isEmpty()){
             throw new NoDataFoundException("This Regional Unit is not valid: "+regionalUnit);
         }

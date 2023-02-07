@@ -30,9 +30,9 @@ public class Area {
     @Indexed
     @NotBlank(message = "Name is mandatory")
     @Pattern(regexp="[α-ωΑ-Ω]+", message="Name must contain only Greek letters")
-    @JsonView(View.Base.class)
     private String name;
     @Id
+    @Range(min = 1, message = "Id must be positive number")
     private int id;
     @Field
     @NotNull(message = "Daily Dose is required")
