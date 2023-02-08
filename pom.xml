@@ -66,6 +66,7 @@
 		<profile>
 			<id>dev</id>
 			<properties>
+				<activatedProperties>dev</activatedProperties>
 				<database.uri>
 					mongodb+srv://yoshi:i_am_a_dinosaur@cluster0.x2xqu.gcp.mongodb.net/db1
 				</database.uri>
@@ -75,6 +76,7 @@
 		<profile>
 			<id>prod</id>
 			<properties>
+				<activatedProperties>prod</activatedProperties>
 				<database.uri>
 					mongodb+srv://yoshi:i_am_a_dinosaur@cluster0.x2xqu.gcp.mongodb.net/prod
 				</database.uri>
