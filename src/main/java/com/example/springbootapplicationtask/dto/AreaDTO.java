@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 public class AreaDTO {
     @NotBlank(message = "Name is mandatory")
     @Pattern(regexp="[α-ωΑ-Ω]+", message="Name must contain only Greek letters")
-    @JsonView(View.Base.class)
     private String name;
     private int id;
     @NotNull(message = "Daily Dose is required")
@@ -76,5 +75,30 @@ public class AreaDTO {
     public String getTotalVaccinationsPerRegion(){
         return String.valueOf(BigDecimal.valueOf(this.getTotalVaccinations())
                 .divide(BigDecimal.valueOf(this.getTotalDistinctPersons() * 2L), 2, RoundingMode.HALF_UP) +"%");
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder dataBuilder = new StringBuilder();
+        appendFieldValue(dataBuilder, name);
+        appendFieldValue(dataBuilder, String.valueOf(id));
+        appendFieldValue(dataBuilder, String.valueOf(dailyDose1));
+        appendFieldValue(dataBuilder, String.valueOf(dailyDose2));
+        appendFieldValue(dataBuilder, String.valueOf(dayDiff));
+        appendFieldValue(dataBuilder, String.valueOf(dayTotal));
+        appendFieldValue(dataBuilder, String.valueOf(referenceDate));
+        appendFieldValue(dataBuilder, String.valueOf(totalDistinctPersons));
+        appendFieldValue(dataBuilder, String.valueOf(totalDose1));
+        appendFieldValue(dataBuilder, String.valueOf(totalDose2));
+        appendFieldValue(dataBuilder, String.valueOf(totalVaccinations));
+        return dataBuilder.toString();
+    }
+
+    private void appendFieldValue(StringBuilder dataBuilder, String fieldValue) {
+        if(fieldValue != null) {
+            dataBuilder.append(fieldValue).append(",");
+        } else {
+            dataBuilder.append("").append(",");
+        }
     }
 }

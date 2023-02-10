@@ -2,6 +2,7 @@ package com.example.springbootapplicationtask.controller;
 
 import com.example.springbootapplicationtask.dto.AreaDTO;
 import com.example.springbootapplicationtask.dto.AreaPercentageDTO;
+import com.example.springbootapplicationtask.dto.response.FileUploadResponse;
 import com.example.springbootapplicationtask.exception.NoDataFoundException;
 import com.example.springbootapplicationtask.exception.ResourceNotFoundException;
 import com.example.springbootapplicationtask.model.Area;
@@ -15,7 +16,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -135,6 +138,16 @@ public class AreaController {
         map.put("AreaList", list);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+    @GetMapping("/uploadToFile")
+    public ResponseEntity uploadToFile() throws Exception{
+        FileUploadResponse file = areaService.uploadAreaToFile();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileDownloadUri() + "\"")
+                .body(file);
+    }
+
 
     @GetMapping("/findByName")
     @Operation(summary = "Get Area By name", responses = {
